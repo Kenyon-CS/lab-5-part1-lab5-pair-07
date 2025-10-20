@@ -174,6 +174,16 @@ public:
       //    last points to the last node of the updated list, and
       //    count is decremented by 1.
 
+    virtual void deleteSmallest() = 0;
+
+    virtual void deleteItems(const Type& deleteItem) = 0; 
+
+    virtual Type searchIndex(const int index) const = 0;
+
+    virtual void deleteIndex(const int index) = 0;
+    
+    virtual void rotate() = 0;
+
     linkedListIterator<Type> begin();
       //Function to return an iterator at the beginning of the
       //linked list.

@@ -42,6 +42,16 @@ public:
       //    is deleted from the list. first points to the first
       //    node, last points to the last node of the updated
       //    list, and count is decremented by 1.
+
+    void deleteSmallest(); 
+
+    void deleteItems(const Type& deleteItem); 
+
+    Type searchIndex(const int index) const; 
+
+    void deleteIndex(const int index); 
+
+    void rotate();
 };
 
 
@@ -168,5 +178,176 @@ void unorderedLinkedList<Type>::deleteNode(const Type& deleteItem)
     }//end else
 }//end deleteNode
 
+template <class Type>
+void unorderedLinkedList<Type>::deleteSmallest() {
+    nodeType<Type> *current = first->link;
+    nodeType<Type> *previous = first;
+    nodeType<Type> *minPtr = first;
+    nodeType<Type> *deletePtr;
+    if (first == NULL) {
+        cout << "The Linked List is empty" << endl;
+        return;
+    } else if (first->link == NULL) {
+        delete first; 
+        first = NULL; 
+        return; 
+    }
+    while (current != NULL) {
+        if (current->info < minPtr->info) {
+            minPtr = current;
+            deletePtr = previous;
+        }
+        
+        previous = current;
+        current = current->link;
+    }
+    if (minPtr == first) {
+        first = first->link;
+    } else {
+        deletePtr->link = minPtr->link; 
+    } 
+    delete minPtr; 
+}
+
+template <class Type>
+void unorderedLinkedList<Type>::deleteItems(const Type& deleteItem)
+{
+    nodeType<Type> *current; //pointer to traverse the list
+    nodeType<Type> *trailCurrent; //pointer just before current
+    bool found;
+    bool atLeastOneFound = false; 
+
+    if (first == NULL)    //Case 1; the list is empty.
+        cout << "Cannot delete from an empty list."
+             << endl;
+    else
+    {
+        while (first != NULL && first->info == deleteItem) //Case 2: the node to be deleted is the first node
+        {
+            atLeastOneFound = true; 
+            current = first;
+            first = first->link;
+            count--;
+            if (first == NULL)    //the list has only one node
+                last = NULL;
+            delete current;
+        }
+        if (first == NULL) { //end the implementation if the LL becomes empty
+            return; 
+        }
+         //search the list for the node with the given info
+        found = false;
+        trailCurrent = first;  //set trailCurrent to point
+                               //to the first node
+        current = first->link; //set current to point to
+                               //the second node
+
+        while (current != NULL) 
+        {
+            if (current->info != deleteItem)
+            {
+                trailCurrent = current;
+                current = current-> link;
+            }
+            else {
+                found = true;
+                atLeastOneFound = true; 
+            }
+
+            if (found) //Case 3; if found, delete the node 
+            {
+            trailCurrent->link = current->link;
+            count--;
+
+            if (last == current) 
+                last = trailCurrent; 
+
+            delete current;  
+            }
+            current = trailCurrent->link; 
+            found = false;
+        }//end while
+        if (!atLeastOneFound) {
+            cout << "The item to be deleted is not in "
+                 << "the list." << endl;
+        }
+    }//end else
+}//end deleteNode
+
+template <class Type>
+Type unorderedLinkedList<Type>::searchIndex(const int index) const {
+    nodeType<Type> *current = first;
+    int count = 1; 
+    if (first==NULL) {
+        cout << "Cannot search in an empty list" << endl; 
+        assert(false); 
+    } else {
+        if (count == index) {
+            return first->info; 
+        }
+        while (count < index && current != NULL) {
+            current = current->link; 
+            count++;
+        }
+        if (current == NULL) {
+        cout << "Error: Index " << index << " is out of bounds." << endl;
+        assert(false);
+    }
+        return current->info; 
+    }
+}
+
+template <class Type>
+void unorderedLinkedList<Type>::deleteIndex(const int index) {
+    if (index < 1) {
+        cout << "Error: Index " << index << " is invalid. Must be 1 or greater." << endl;
+        assert(false);
+    }
+    nodeType<Type> *current = first;
+    nodeType<Type> *trailCurrent = nullptr;
+    int count = 1; 
+    if (first==NULL) {
+        cout << "Cannot remove item in an empty list" << endl; 
+        assert(false); 
+    } else {
+        if (count == index) {
+            current = first; 
+            first = first -> link; 
+            if (first == NULL) {
+            last = NULL;
+            }
+            delete current;
+            return;
+        }
+        while (count < index && current != NULL) {
+            trailCurrent = current;
+            current = current->link; 
+            count++;
+        }
+        if (current == NULL) {
+            cout << "Error: Index " << index << " is out of bounds." << endl;
+            assert(false);
+        }
+        trailCurrent->link = current->link;
+        
+        if (last == current) {
+            last = trailCurrent;
+        }
+
+        delete current;  
+    }
+}
+
+template <class Type>
+void unorderedLinkedList<Type>::rotate() {
+    if (first == NULL || first->link == NULL) {
+        return;
+    }
+    nodeType<Type> *nodeToMove = first;
+    first = first->link;
+    last->link = nodeToMove;
+    last = nodeToMove;
+    last->link = NULL;
+}
 
 #endif
