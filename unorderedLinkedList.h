@@ -178,20 +178,33 @@ void unorderedLinkedList<Type>::deleteNode(const Type& deleteItem)
     }//end else
 }//end deleteNode
 
+/**
+ * Finds and removes the first node containing the smallest value in the list.
+ *
+ * Precondition: None. The function handles an empty list.
+ * Postcondition: If the list is empty, a message is printed.
+ * If not empty, the list is traversed, and the first node
+ * with the minimum value is removed. The list's 'first', 'last'
+ * (if the node removed was the first or last), and 'count'
+ * (decrement) should be updated.
+ * @note The provided implementation is buggy: it does not update 'count' or
+ * 'last' correctly, and 'deletePtr' is uninitialized if 'first' is the smallest.
+ */
 template <class Type>
 void unorderedLinkedList<Type>::deleteSmallest() {
-    nodeType<Type> *current = first->link;
-    nodeType<Type> *previous = first;
-    nodeType<Type> *minPtr = first;
-    nodeType<Type> *deletePtr;
-    if (first == NULL) {
+    if (first == NULL) { 
         cout << "The Linked List is empty" << endl;
         return;
-    } else if (first->link == NULL) {
+    } 
+    if (first->link == NULL) {
         delete first; 
         first = NULL; 
         return; 
     }
+    nodeType<Type> *current = first->link;
+    nodeType<Type> *previous = first;
+    nodeType<Type> *minPtr = first;
+    nodeType<Type> *deletePtr;
     while (current != NULL) {
         if (current->info < minPtr->info) {
             minPtr = current;
@@ -209,6 +222,17 @@ void unorderedLinkedList<Type>::deleteSmallest() {
     delete minPtr; 
 }
 
+/**
+ * Finds and removes ALL occurrences of a specific item from the list.
+ *
+ * Precondition: None. The function handles an empty list.
+ * Postcondition: The list is traversed, and every node whose 'info'
+ * matches 'deleteItem' is removed. 'first', 'last', and 'count'
+ * are updated for each deletion. If the list becomes empty,
+ * 'first' and 'last' are set to NULL. If no items are found,
+ * a message is printed to the console.
+ * @param deleteItem The value to be removed from the list.
+ */
 template <class Type>
 void unorderedLinkedList<Type>::deleteItems(const Type& deleteItem)
 {
@@ -274,6 +298,18 @@ void unorderedLinkedList<Type>::deleteItems(const Type& deleteItem)
     }//end else
 }//end deleteNode
 
+/**
+ * Retrieves the value of the element at a specific 1-based index.
+ *
+ * Precondition: The list must not be empty. The index must be
+ * within the valid range [1, length()].
+ * Postcondition: The list remains unchanged. If the index is valid,
+ * a copy of the value at that position is returned.
+ * If the list is empty or the index is out of bounds,
+ * an error is printed and the program aborts via assert(false).
+ * @param index The 1-based position of the element to retrieve.
+ * @return A copy of the element's value (Type) at the given index.
+ */
 template <class Type>
 Type unorderedLinkedList<Type>::searchIndex(const int index) const {
     nodeType<Type> *current = first;
@@ -297,6 +333,18 @@ Type unorderedLinkedList<Type>::searchIndex(const int index) const {
     }
 }
 
+/**
+ * Deletes the node at a specific 1-based index from the list.
+ *
+ * Precondition: The list must not be empty. The index must be
+ * within the valid range [1, length()].
+ * Postcondition: The node at the specified index is removed from the
+ * list. 'first', 'last' (if the deleted node was the first or
+ * last), and 'count' (decremented) are updated. If the list is
+ * empty or the index is invalid, an error is printed and
+ * the program aborts via assert(false).
+ * @param index The 1-based position of the node to be deleted.
+ */
 template <class Type>
 void unorderedLinkedList<Type>::deleteIndex(const int index) {
     if (index < 1) {
@@ -305,24 +353,25 @@ void unorderedLinkedList<Type>::deleteIndex(const int index) {
     }
     nodeType<Type> *current = first;
     nodeType<Type> *trailCurrent = nullptr;
-    int count = 1; 
+    int current_index = 1; 
     if (first==NULL) {
         cout << "Cannot remove item in an empty list" << endl; 
         assert(false); 
     } else {
-        if (count == index) {
+        if (current_index == index) {
             current = first; 
             first = first -> link; 
             if (first == NULL) {
             last = NULL;
             }
             delete current;
+            count--;
             return;
         }
-        while (count < index && current != NULL) {
+        while (current_index < index && current != NULL) {
             trailCurrent = current;
             current = current->link; 
-            count++;
+            current_index++;
         }
         if (current == NULL) {
             cout << "Error: Index " << index << " is out of bounds." << endl;
@@ -335,9 +384,21 @@ void unorderedLinkedList<Type>::deleteIndex(const int index) {
         }
 
         delete current;  
+        count--;
     }
 }
 
+/**
+ * Moves the first element of the list to the end of the list.
+ *
+ * Precondition: None. The function handles empty lists or
+ * lists with a single element (by doing nothing).
+ * Postcondition: If the list contains two or more nodes, the original
+ * 'first' node is detached and re-linked as the 'last'
+ * node. The original second node becomes the new 'first'.
+ * 'last' is updated to point to the relocated node.
+ * 'count' remains unchanged.
+ */
 template <class Type>
 void unorderedLinkedList<Type>::rotate() {
     if (first == NULL || first->link == NULL) {
