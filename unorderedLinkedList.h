@@ -1,3 +1,9 @@
+//Lab Partners: Leo Xie, Djordje Dragojlovic
+//These functions are new operations added to the unorderedLinkedList class to enhance its functionality.
+//They provide advanced methods for list manipulation, including: deleting the node with the smallest value (`deleteSmallest`), deleting all nodes matching a specific value (`deleteItems`),
+//retrieving an element by its 1-based position (`searchIndex`), deleting an element at a specific 1-based position (`deleteIndex`), and moving the first element of the list to the end (`rotate`).
+//Each person contributed equally to the project and worked together.
+
 #ifndef H_UnorderedLinkedList
 #define H_UnorderedLinkedList
 
@@ -199,6 +205,8 @@ void unorderedLinkedList<Type>::deleteSmallest() {
     if (first->link == NULL) {
         delete first; 
         first = NULL; 
+        last = NULL;
+        count--;
         return; 
     }
     nodeType<Type> *current = first->link;
@@ -220,6 +228,7 @@ void unorderedLinkedList<Type>::deleteSmallest() {
         deletePtr->link = minPtr->link; 
     } 
     delete minPtr; 
+    count--;
 }
 
 /**
